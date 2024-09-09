@@ -1,25 +1,31 @@
 pipeline {
     agent any
+
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/chiragsunil/Project1.git'
+                // Checkout code from Git repository
+                git url: 'https://github.com/chiragsunil/Project1'
             }
         }
         stage('Build') {
             steps {
+                // Run Maven build
                 sh 'mvn clean install'
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn test'
+                // Run a specific test class
+                sh 'mvn -Dtest=naukrilogin.NaukriLoginTest test'
             }
         }
-        stage('Archive Results') {
-            steps {
-                junit '**/target/surefire-reports/*.xml'
-            }
+    }
+
+    post {
+        always {
+            // Archive test results
+            junit '**/target/surefire-reports/*.xml'
         }
     }
 }
